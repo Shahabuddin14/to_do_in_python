@@ -16,7 +16,7 @@ exit_button = Fsg.Button("Exit")
 window = Fsg.Window('To-Do-App',
                     layout=[[label],[input_box, add_button],
                             [list_box, edit_button, complete_button], [exit_button]],
-                    font=("Helvetica", 20)
+                    font=("Helvetica", 15)
                     )
 while True:
     event, values = window.read()
@@ -31,22 +31,28 @@ while True:
             window["todos"].Update(values=todos)
 
         case "Edit":
-            edit_todo = values['todos'][0]
-            new_todo = values['todo'] + "\n"
+            try:
+                edit_todo = values['todos'][0]
+                new_todo = values['todo'] + "\n"
 
-            todos = sf.get_todos()
-            index = todos.index(edit_todo)
-            todos[index] = new_todo
-            sf.write_todos(todos)
-            window["todos"].Update(values=todos)
+                todos = sf.get_todos()
+                index = todos.index(edit_todo)
+                todos[index] = new_todo
+                sf.write_todos(todos)
+                window["todos"].Update(values=todos)
+            except IndexError:
+                Fsg.popup('Please select an item', font=("Helvetica", 15))
 
         case "Complete":
-            complete_todo = values['todos'][0]
-            todos = sf.get_todos()
-            todos.remove(complete_todo)
-            sf.write_todos(todos)
-            window["todos"].Update(values=todos)
-            window['todo'].update(value='')
+            try:
+                complete_todo = values['todos'][0]
+                todos = sf.get_todos()
+                todos.remove(complete_todo)
+                sf.write_todos(todos)
+                window["todos"].Update(values=todos)
+                window['todo'].update(value='')
+            except IndexError:
+                Fsg.popup('Please select an item', font=("Helvetica", 15))
         case "Exit":
             break
 
